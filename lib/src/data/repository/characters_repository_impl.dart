@@ -1,38 +1,51 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
 
+import 'package:casino_test/src/core/network/network.dart';
+import 'package:casino_test/src/core/toast/toast.dart';
+import 'package:casino_test/src/data/datasource/remote.dart';
 import 'package:casino_test/src/data/models/character.dart';
 import 'package:casino_test/src/data/repository/characters_repository.dart';
-import 'package:http/http.dart';
 
 class CharactersRepositoryImpl implements CharactersRepository {
-  final Client client;
+  CharactersRepositoryImpl({
+    required this.remote,
+    required this.info,
+  });
 
-  CharactersRepositoryImpl(this.client);
+  final RemoteDS remote;
+  final NetworkInfo info;
 
   @override
   Future<List<Character>?> getCharacters(int page) async {
-    var client = Client();
-    final charResult = await client.get(
-      Uri.parse("https://rickandmortyapi.com/api/character/?page=$page"),
-    );
-    final jsonMap = await json.decode(charResult.body) as Map<String, dynamic>;
+    if (await info.isConnected()) {
+      try {
+        var res = await remote.fetch(page: page);
 
-    final bool showMockedError = Random().nextBool();
-    print("casino test log: showMockedError = $showMockedError");
-    if (showMockedError) {
-      return Future.delayed(
-        const Duration(seconds: 5),
-        () => null,
-      );
+        if (res.hasException) {
+          res.exception?.graphqlErrors.forEach((e) {
+            // log(e.message);
+          });
+          CustomToast().toast('Something went wrong!');
+
+          return null;
+        }
+
+        return Future.value(
+          List.of(
+            (res.data!['characters']['results'] as List).map(
+              (e) => Character.fromJson(e),
+            ),
+          ),
+        );
+      } catch (e) {
+        CustomToast().toast('Something went wrong!');
+
+        return null;
+      }
+    } else {
+      CustomToast().toast('Please check your internet and try again!');
+
+      return null;
     }
-    return Future.value(
-      List.of(
-        (jsonMap["results"] as List<dynamic>).map(
-          (value) => Character.fromJson(value),
-        ),
-      ),
-    );
   }
 }

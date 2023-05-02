@@ -1,11 +1,13 @@
+import 'package:casino_test/src/data/models/character.dart';
 import 'package:casino_test/src/data/repository/characters_repository.dart';
 import 'package:casino_test/src/presentation/bloc/main_event.dart';
 import 'package:casino_test/src/presentation/bloc/main_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MainPageBloc
-    extends Bloc<MainPageEvent, MainPageState> {
+class MainPageBloc extends Bloc<MainPageEvent, MainPageState> {
   final CharactersRepository _charactersRepository;
+
+  List<Character> character = [];
 
   MainPageBloc(
     MainPageState initialState,
@@ -15,19 +17,21 @@ class MainPageBloc
       (event, emitter) => _getDataOnMainPageCasino(event, emitter),
     );
     on<DataLoadedOnMainPageEvent>(
-      (event, emitter) => _dataLoadedOnMainPageCasino(event, emitter),
+      (event, emitter) => dataLoadedOnMainPageCasino(event, emitter),
     );
     on<LoadingDataOnMainPageEvent>(
       (event, emitter) => emitter(LoadingMainPageState()),
     );
   }
 
-  Future<void> _dataLoadedOnMainPageCasino(
+  Future<void> dataLoadedOnMainPageCasino(
     DataLoadedOnMainPageEvent event,
     Emitter<MainPageState> emit,
   ) async {
-    if (event.characters == null) {
-      emit(SuccessfulMainPageState(event.characters!));
+    if (event.characters != null) {
+      character.addAll(event.characters ?? []);
+
+      emit(SuccessfulMainPageState([...character]));
     } else {
       emit(UnSuccessfulMainPageState());
     }
