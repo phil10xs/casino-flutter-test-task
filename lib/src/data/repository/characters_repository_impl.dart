@@ -31,11 +31,9 @@ class CharactersRepositoryImpl implements CharactersRepository {
         }
 
         return Future.value(
-          List.of(
-            (res.data!['characters']['results'] as List).map(
-              (e) => Character.fromJson(e),
-            ),
-          ),
+          List.of((res.data!['characters']['results'] as List).map(
+            (e) => Character.fromJson(e),
+          )),
         );
       } catch (e) {
         CustomToast().toast('Something went wrong!');
