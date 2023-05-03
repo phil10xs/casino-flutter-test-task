@@ -25,7 +25,9 @@ class MainDIModule {
     );
 
     getIt.registerLazySingleton<RemoteDS>(
-      () => RemoteDSImpl(graphQLClient: getIt()),
+      () => RemoteDSImpl(
+        graphQLClient: getIt(),
+      ),
     );
 
     getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
