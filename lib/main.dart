@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:casino_test/src/data/repository/characters_repository.dart';
 import 'package:casino_test/src/di/main_di_module.dart';
 import 'package:casino_test/src/presentation/bloc/main_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 void main() async {
+  await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
   await MainDIModule().configure(GetIt.I);
 
   runApp(const MyApp());
