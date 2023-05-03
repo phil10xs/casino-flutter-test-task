@@ -10,8 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 void main() async {
-  await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
   await MainDIModule().configure(GetIt.I);
+  await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
 
   runApp(const MyApp());
 }
