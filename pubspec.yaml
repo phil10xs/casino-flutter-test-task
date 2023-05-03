@@ -17,10 +17,12 @@ dependencies:
   equatable: ^2.0.3
   http: any
   json_annotation: ^4.4.0
+  connectivity_plus: ^3.0.4
   cupertino_icons: ^1.0.2
   graphql_flutter: ^5.1.2
   animate_do: ^3.0.2
   infinite_scroll: ^1.1.1
+  
 
 dev_dependencies:
   flutter_test:
